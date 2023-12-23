@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  dev-db:
+    image: postgres:16
+    ports:
+      - 5400:5402
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234Ooys
+      POSTGRES_DB: ooys
+    networks:
+    - ooys
+networks:
+  ooys:
