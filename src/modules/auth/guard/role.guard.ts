@@ -22,7 +22,18 @@ export class RoleGuard implements CanActivate {
 
     const { user } = context.switchToHttp().getRequest();
 
-    ['admin', 'premium'];
+    [
+      'EXECUTIVE',
+      'SECRETARY',
+      'PARENT',
+      'PARENTAL_ASSISTANT',
+      'TEACHER',
+      'DOCTOR',
+      'PSYCHOLOGIST',
+      'NURSE',
+      'SERVICE_DRIVER',
+      'SERVICE_ATTENDANT',
+    ];
 
     return requiredRoles.some((role) => user.role?.includes(role));
   }

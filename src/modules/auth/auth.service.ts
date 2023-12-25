@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -72,7 +72,7 @@ export class AuthService {
     userId: number,
     email: string,
     role: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ accessToken: string; success: boolean }> {
     const payload = {
       sub: userId,
       email,
@@ -85,9 +85,10 @@ export class AuthService {
       expiresIn: '15m',
       secret: secret,
     });
-    console.log('222', payload);
+
     return {
-      access_token: accessToken,
+      accessToken: accessToken,
+      success: true,
     };
   }
 }
