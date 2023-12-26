@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { paths } from '../constants/paths';
+import { I18nService } from 'nestjs-i18n';
 
 interface ExtendedHttpExceptionResponse {
   message?: string;
@@ -15,7 +16,9 @@ interface ExtendedHttpExceptionResponse {
 
 @Catch(HttpException)
 class ExceptionFilters implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  constructor(private readonly i18n: I18nService) {}
+
+  async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
@@ -27,9 +30,14 @@ class ExceptionFilters implements ExceptionFilter {
     let isCustomMessage = false;
 
     if (request.url.includes(paths.sign_up) && status === 403) {
-      responseMessage = 'Credentials taken';
+      responseMessage = await this.i18n.t('lang.credentials_taken');
       isCustomMessage = true;
-    } else if (request.url.includes(paths.sign_in)) {
+    } else if (
+      request.url.includes(paths.sign_in) &&
+      (status === 401 || status === 403)
+    ) {
+      responseMessage = await this.i18n.t('lang.credentials_wrong');
+      isCustomMessage = true;
     }
 
     if (!isCustomMessage) {
